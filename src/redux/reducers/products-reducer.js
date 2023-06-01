@@ -17,12 +17,14 @@ const productsReducer = (state = initalState, action) => {
         ...state,
         flag: "loading"
       };
-    case FETCH_DATA_SUCCESS:
+    case FETCH_DATA_SUCCESS: {
+      console.log(action.payload, 'action.payload')
       return {
         ...state,
         flag: "success",
         data: action.payload
       };
+    }''
     case FETCH_DATA_ERROR:
       return {
         ...state,

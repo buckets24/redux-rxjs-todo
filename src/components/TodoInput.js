@@ -12,19 +12,26 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const TodoInput = () => {
+const TodoInput = ({ type = "create", action = (text) => addTodo(text), initialValue = "" }) => {
   const classes = useStyles();
   const [text, setText] = useState("");
 
   const dispatch = useDispatch();
+  const isCreating = type === "create"
+  const buttonLabel = isCreating ? 'Add Item' : 'Update Item'
+  const inputPlaceholder = `${isCreating ? 'Add a todo item' : ''}`
 
   const handleSubmit = (event) => {
     if (text !== "") {
-      dispatch(addTodo(text));
       setText("");
+      dispatch(action(text))
     }
     event.preventDefault();
   };
+
+  React.useEffect(() => {
+    setText(initialValue)
+  }, [initialValue])
 
   return (
     <form className={classes.form} onSubmit={handleSubmit}>
@@ -32,13 +39,13 @@ const TodoInput = () => {
         className={classes.textbox}
         size="small"
         variant="outlined"
-        label="Add a todo item"
+        label={inputPlaceholder}
         name="todo"
         value={text}
         onChange={(event) => setText(event.target.value)}
       />
       <Button color="primary" variant="contained" onClick={handleSubmit}>
-        Add Item
+        {buttonLabel}
       </Button>
     </form>
   );

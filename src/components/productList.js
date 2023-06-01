@@ -1,6 +1,6 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchData } from "../redux/actions/index";
+import { addTodo, fetchData } from "../redux/actions/index";
 import { Button, Typography, CircularProgress } from "@material-ui/core";
 
 const ProductList = () => {
@@ -10,6 +10,16 @@ const ProductList = () => {
   const fetchProductList = () => {
     dispatch(fetchData());
   };
+
+  const addProductsToTodo = (productItems) =>
+    productItems.map((item => dispatch(addTodo(item.title))))
+
+  React.useEffect(() => {
+    if (products.data) {
+      addProductsToTodo(products.data)
+    }
+
+  }, [products.data])
 
   return (
     <div>

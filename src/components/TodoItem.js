@@ -1,7 +1,9 @@
 import React from "react";
 import { useDispatch } from "react-redux";
-import { deleteTodo, toggleTodo } from "../redux/actions/index";
+import { deleteTodo, toggleTodo, updateTodo } from "../redux/actions/index";
 import {
+  Box,
+  Button,
   Checkbox,
   makeStyles,
   ListItem,
@@ -9,11 +11,12 @@ import {
   Avatar,
   IconButton,
   ListItemText,
-  ListItemSecondaryAction
+  ListItemSecondaryAction,
 } from "@material-ui/core";
 import FolderIcon from "@material-ui/icons/Folder";
 import DeleteIcon from "@material-ui/icons/Delete";
 import CreateIcon from "@material-ui/icons/Create";
+import TodoInput from "./TodoInput";
 
 const useStyles = makeStyles((theme) => ({
   form: {
@@ -27,6 +30,7 @@ const useStyles = makeStyles((theme) => ({
 const TodoItem = ({ id, text, completed }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
+  const [isEditing, setEditing] = React.useState(false)
 
   const handleDelete = () => {
     dispatch(deleteTodo(id));
@@ -36,30 +40,52 @@ const TodoItem = ({ id, text, completed }) => {
     dispatch(toggleTodo(id));
   };
 
-  const handleUpdateItem = (id) => {
-    // TODO: implement update item on pencil icon click
+  const handleUpdateItem = () => {
+    setEditing(true)
   };
 
   return (
     <ListItem>
-      <ListItemAvatar>
-        <Avatar>
-          <FolderIcon />
-        </Avatar>
-      </ListItemAvatar>
-      <ListItemText
-        primary={text}
-        className={completed ? classes.completedText : null}
-      />
-      <ListItemSecondaryAction>
-        <IconButton edge="end" aria-label="update" onClick={handleUpdateItem}>
-          <CreateIcon />
-        </IconButton>
-        <Checkbox edge="end" onChange={hanldeToggle} />
-        <IconButton edge="end" aria-label="delete" onClick={handleDelete}>
-          <DeleteIcon />
-        </IconButton>
-      </ListItemSecondaryAction>
+      {isEditing ? (
+        <Box display="flex" alignItems="flex-end">
+          <TodoInput
+            type="edit"
+            initialValue={text}
+            action={(value) => {
+              setEditing(false)
+              return updateTodo({ id, completed, text: value })
+            }}
+          />
+          <Button
+            color="info"
+            variant="contained"
+            onClick={() => setEditing(false)}
+            style={{ margin: "4px" }}
+          >
+            Cancel
+          </Button>
+        </Box>
+      ) : (
+      <>
+        <ListItemAvatar>
+          <Avatar>
+            <FolderIcon />
+          </Avatar>
+        </ListItemAvatar>
+        <ListItemText
+          primary={text}
+          className={completed ? classes.completedText : null}
+        />
+        <ListItemSecondaryAction>
+          <IconButton edge="end" aria-label="update" onClick={handleUpdateItem}>
+            <CreateIcon />
+          </IconButton>
+          <Checkbox edge="end" onChange={hanldeToggle} />
+          <IconButton edge="end" aria-label="delete" onClick={handleDelete}>
+            <DeleteIcon />
+          </IconButton>
+        </ListItemSecondaryAction>
+      </>)}
     </ListItem>
   );
 };

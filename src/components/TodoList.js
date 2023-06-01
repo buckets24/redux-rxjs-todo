@@ -1,7 +1,7 @@
 import React from "react";
 import TodoItem from "./TodoItem";
 import { useSelector, useDispatch } from "react-redux";
-import { restTodoList } from "../redux/actions/index";
+import { restTodoList, clearCompletedTodo } from "../redux/actions/index";
 import {
   Button,
   Divider,
@@ -35,7 +35,7 @@ const TodoList = () => {
   };
 
   const clearCompleted = () => {
-    // TODO: implement remove selected items only
+    dispatch(clearCompletedTodo());
   };
 
   return (
@@ -46,7 +46,7 @@ const TodoList = () => {
             Todo list
           </Typography>
           <List dense={true} className={classes.list}>
-            {list.map((todo) => (
+            {Array(...list).reverse().map((todo) => (
               <TodoItem key={todo.id} {...todo} />
             ))}
           </List>
